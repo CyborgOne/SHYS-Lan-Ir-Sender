@@ -23,31 +23,17 @@
 #include <Ethernet.h>
 #include <IRremote.h>
 #include <SoftwareSerial.h>
-#include <SSD1306Ascii.h>
-#include <SSD1306AsciiAvrI2c.h>
 
 // ---------------------------------------------------------------
 // --                      START CONFIG                         --
 // ---------------------------------------------------------------
 boolean serialOut = true;
 
-// Display
-boolean useDisplay = false;
-#define OLED_I2C_ADDRESS 0x3C
-
-// Display-Timeout in ms
-long displayTimeout = 60000; 
-
 // ---------------------------------------------------------------
 // --                       END CONFIG                          --
 // ---------------------------------------------------------------
 
 IRsend irsend;                 // Pin #D3 Sendediode ohne Widerstand
-
-
-// Display 
-SSD1306AsciiAvrI2c oled;
-
 
 // Netzwerkdienste
 EthernetServer HttpServer(80); 
@@ -102,17 +88,6 @@ void setup() {
   }
   Serial.println(F("SmartHome yourself - IR"));
   Serial.println();
-
-  // Display
-  if(useDisplay){
-    oled.begin(&Adafruit128x64, OLED_I2C_ADDRESS);
-    oled.setFont(System5x7);
-    oled.clear();
-    oled.home();
-    clearDisplay(true);
-  }
-
-
   
   // Netzwerk initialisieren
   Ethernet.begin(mac, ip, dns, gate, mask);
@@ -399,32 +374,6 @@ void pruefeURLParameter(char* tmpName, char* value){
       Serial.println(rawCmdAnschluss);    
     }
   }  
-}
-
-
-
-// ---------------------------------------
-//     Display - Hilfsmethoden
-// ---------------------------------------
-
-void clearDisplay(boolean fullClear){
-  if(useDisplay){
-    oled.clear();
-    
-    if (!fullClear){
-      oled.setFont(Verdana12_bold);
-      oled.setCursor(0, 1);
-      oled.print(F("SmartHome yourself"));
-      
-      oled.setFont(System5x7);
-      oled.setCursor(0, 2);
-      oled.print(F("IR Sender"));
-  
-      oled.setCursor(0, 7);
-      oled.print(F("IP: "));
-      oled.print(Ethernet.localIP());
-    }
-  }
 }
 
 
